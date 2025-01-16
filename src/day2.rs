@@ -1,79 +1,62 @@
-use std::io::prelude::*;
 use std::fs::File;
+use std::io::prelude::*;
 
 pub fn run() {
-	let mut file = File::open("input/day-two.txt").expect("Unable to open the file");
+    let mut file = File::open("input/day-two.txt").expect("Unable to open the file");
     let mut contents = String::new();
-    file.read_to_string(&mut contents).expect("Unable to read the file");
-	let mut _numbers: Vec<Vec<i32>> = Vec::new();
-    
-    let num_strings: Vec<&str> = contents.split_ascii_whitespace().collect();
+    file.read_to_string(&mut contents)
+        .expect("Unable to read the file");
+    let mut _numbers: Vec<Vec<i32>> = Vec::new();
 
-    let mut i = 0;
-	let mut arr: Vec<i32> = [].to_vec();
+    let _numbers: Vec<Vec<i32>> = contents
+        .lines()
+        .map(|line| {
+            line.split_whitespace()
+                .into_iter()
+                .map(|num| num.parse().unwrap_or_default())
+                .collect::<Vec<i32>>()
+        })
+        .collect();
 
-    for num in num_strings.iter() {
-        if i == 5 {
-			_numbers.push(arr);
-			arr = [].to_vec();
-            i = 0;
-        }
-        
-		arr.push(num.parse().unwrap_or_default());
-		i = i+1;
-    }
-
-    println!("Day 2 Part 2: {:?}", calculate_part_1(_numbers.clone()));
+    println!("Day 2 Part 1: {:?}", calculate_part_1(_numbers.clone()));
 }
 
-fn calculate_part_1(mut _numbers: Vec<Vec<i32>>) -> i32{
-	let mut _arr: Vec<bool> = Vec::new();
+fn calculate_part_1(mut _numbers: Vec<Vec<i32>>) -> i32 {
+    let mut _arr: Vec<bool> = Vec::new();
     for _set in &_numbers {
-		let mut ascending: Option<bool> = None;
-		let mut prev: Option<i32> = None;
-		let mut i = 0;
-		for _num in _set.into_iter() {
-			if let Some(prev_value) = prev {
-				if let Some(ascending_value) = ascending {
-					if _num == &prev_value {
-						_arr.push(false);
-						break;
-					}
-					if _num > &prev_value {
-						if !ascending_value {
-							_arr.push(false);
-							break;
-						}
-						if (_num - &prev_value) > 3 {
-							_arr.push(false);
-							break;
-						}
-						ascending = Some(true);
-					} 
-					
-					if _num < &prev_value {
-						if ascending_value {
-							_arr.push(false);
-							break;
-						}
-						if (&prev_value - _num) > 3 {
-							_arr.push(false);
-							break;
-						}
-						ascending = Some(false);
-					}
-				} else {
-					ascending = Some(_num > &prev_value);
-				}
-			} else {
-				prev = Some(*_num);
-			}
-			if i == 4 {
-				_arr.push(true);
-				break;
-			}
-			i = i + 1;
-		}
+        let mut prev_diff: Option<i32> = None;
+        let mut prev: Option<i32> = None;
+        let mut i = 0;
+        for _num in _set.into_iter() {
+            if let Some(prev_value) = prev {
+                let cur_diff = _num - &prev_value;
+                if i32::abs(cur_diff) > 3 || i32::abs(cur_diff) < 1 {
+                    _arr.push(false);
+                    break;
+                }
+                if let Some(prev_diff_val) = prev_diff {
+                    if prev_diff_val.is_positive() != cur_diff.is_positive() {
+                        _arr.push(false);
+                        break;
+                    }
+                }
+                prev_diff = Some(cur_diff);
+                prev = Some(*_num);
+            } else {
+                prev = Some(*_num);
+            }
+            if i == _set.len() - 1 {
+                _arr.push(true);
+                break;
+            }
+            i = i + 1;
+        }
+    }
+
+    let mut j = 0;
+    for safe in &_arr {
+        println!("{:?} {:?}", safe, _numbers[j]);
+        j = j + 1;
     }
 
     return _arr.into_iter().filter(|safe| *safe).count() as i32;
