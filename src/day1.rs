@@ -26,8 +26,8 @@ pub fn run() {
         }
     }
 
-    println!("{:?}", calculate_part_1(_numbers1.clone(), _numbers2.clone()));
-    println!("{:?}", calculate_part_2(_numbers1.clone(), _numbers2.clone()));
+    println!("Day 1 Part 1: {:?}", calculate_part_1(_numbers1.clone(), _numbers2.clone()));
+    println!("Day 1 Part 2: {:?}", calculate_part_2(_numbers1.clone(), _numbers2.clone()));
 }
 
 fn calculate_part_1(mut _numbers1: Vec<i32>, mut _numbers2: Vec<i32>) -> i32{
