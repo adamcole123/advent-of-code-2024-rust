@@ -53,12 +53,6 @@ fn calculate_part_1(mut _numbers: Vec<Vec<i32>>) -> i32 {
         }
     }
 
-    let mut j = 0;
-    for safe in &_arr {
-        println!("{:?} {:?}", safe, _numbers[j]);
-        j = j + 1;
-    }
-
     return _arr.into_iter().filter(|safe| *safe).count() as i32;
 }
 
